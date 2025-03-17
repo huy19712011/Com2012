@@ -394,6 +394,97 @@ WHERE
 ORDER BY
     list_price;
 
+-- 7. NULL
+-- 7.1 IS NULL, IS NOT NULL
+SELECT
+    customer_id,
+    first_name,
+    last_name,
+    phone
+FROM
+    sales.customers
+WHERE
+    phone IS NULL
+ORDER BY
+    first_name,
+    last_name;
+
+-- 8. IN
+-- 8.1 Basic SQL Server IN operator
+SELECT
+    product_name,
+    list_price
+FROM
+    production.products
+WHERE
+    list_price IN (89.99, 109.99, 159.99)
+ORDER BY
+    list_price;
+
+-- NOT IN
+SELECT
+    product_name,
+    list_price
+FROM
+    production.products
+WHERE
+    list_price NOT IN (89.99, 109.99, 159.99)
+ORDER BY
+    list_price;
+
+-- Advanced: in subquery
+SELECT
+    product_name,
+    list_price
+FROM
+    production.products
+WHERE
+    list_price NOT IN (89.99, 109.99, 159.99)
+ORDER BY
+    list_price;
+
+-- 9. BETWEEN
+-- 9.1 Using SQL Server BETWEEN with numbers example
+-- BETWEEN
+SELECT
+    product_id,
+    product_name,
+    list_price
+FROM
+    production.products
+WHERE
+    list_price BETWEEN 149.99 AND 199.99
+ORDER BY
+    list_price;
+-- NOT BETWEEN
+SELECT
+    product_id,
+    product_name,
+    list_price
+FROM
+    production.products
+WHERE
+    list_price NOT BETWEEN 149.99 AND 199.99
+ORDER BY
+    list_price;
+
+-- 9.2 Using SQL Server BETWEEN with dates example
+SELECT
+    order_id,
+    customer_id,
+    order_date,
+    order_status
+FROM
+    sales.orders
+WHERE
+    order_date BETWEEN '20170115' AND '20170117'
+ORDER BY
+    order_date;
+
+-- 10. LIKE
+
+
+
 
 
 
