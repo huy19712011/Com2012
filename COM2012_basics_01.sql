@@ -147,7 +147,7 @@ FROM
     sales.customers
 ORDER BY
     city,
-    first_name;
+    first_name DESC;
 
 -- Sort a result set by multiple columns in different orders
 SELECT
@@ -483,7 +483,161 @@ ORDER BY
 
 -- 10. LIKE
 
+-- 11. GROUP BY
+-- Syntax: GROUP BY clause produces a group for each combination of the values in the columns listed in the GROUP BY clause.
+/*
+SELECT
+    select_list
+FROM
+    table_name
+GROUP BY
+    column_name1,
+    column_name2 ,...;
+*/
+-- 11.1
+-- normal
+SELECT
+    order_id,
+	order_date,
+	customer_id,
+    YEAR (order_date) order_year
+FROM
+    sales.orders
+WHERE
+    customer_id IN (1, 2)
+ORDER BY
+    customer_id;
 
+-- using GROUP BY
+SELECT
+    customer_id,
+    YEAR (order_date) order_year
+FROM
+    sales.orders
+WHERE
+    customer_id IN (1, 2)
+GROUP BY
+    customer_id,
+    YEAR (order_date)
+ORDER BY
+    customer_id;
+
+-- same as DISTINCT
+SELECT DISTINCT
+    customer_id,
+    YEAR (order_date) order_year
+FROM
+    sales.orders
+WHERE
+    customer_id IN (1, 2)
+ORDER BY
+    customer_id;
+
+-- 11.2 GROUP BY clause and aggregate functions
+-- COUNT(); SUM(); AVG(); MIN(); MAX()
+--
+SELECT
+    customer_id,
+    YEAR (order_date) AS order_year,
+    COUNT (order_id) AS order_placed,
+	--
+	COUNT (customer_id) AS number,
+	COUNT (order_date) AS number,
+	COUNT (*) AS number
+FROM
+    sales.orders
+WHERE
+    customer_id IN (1, 2)
+GROUP BY
+    customer_id,
+    YEAR (order_date)
+ORDER BY
+    customer_id;
+
+-- Error
+SELECT
+    customer_id,
+    YEAR (order_date) AS order_year,
+    -- Error at this row
+	order_status
+FROM
+    sales.orders
+WHERE
+    customer_id IN (1, 2)
+GROUP BY
+    customer_id,
+    YEAR (order_date)
+ORDER BY
+    customer_id;
+
+-- 11.3 More examples
+-- GROUP BY clause with the COUNT() function
+-- COUNT() function returns the number of customers in each city
+SELECT
+    city,
+    COUNT (customer_id) AS customer_count
+FROM
+    sales.customers
+GROUP BY
+    city
+ORDER BY
+    city;
+
+-- number of customers by state and city
+SELECT
+    city,
+    state,
+    COUNT (customer_id) AS customer_count
+FROM
+    sales.customers
+GROUP BY
+    state,
+    city
+ORDER BY
+    city,
+    state;
+
+-- GROUP BY clause with the MIN and MAX functions
+-- minimum and maximum list prices of all products with the model 2018 by brand
+SELECT
+    brand_name,
+    MIN (list_price) AS min_price,
+    MAX (list_price) AS max_price
+FROM
+    production.products p
+INNER JOIN production.brands b ON b.brand_id = p.brand_id
+WHERE
+    model_year = 2018
+GROUP BY
+    brand_name
+ORDER BY
+    brand_name;
+
+-- GROUP BY clause with the AVG() function
+-- average list price by brand for all products with the model year 2018
+SELECT
+    brand_name,
+    AVG (list_price) AS avg_price
+FROM
+    production.products p
+INNER JOIN production.brands b ON b.brand_id = p.brand_id
+WHERE
+    model_year = 2018
+GROUP BY
+    brand_name
+ORDER BY
+    brand_name;
+
+-- GROUP BY clause with the SUM function
+SELECT
+    order_id,
+    SUM (
+        quantity * list_price * (1 - discount)
+    ) AS net_value
+FROM
+    sales.order_items
+GROUP BY
+    order_id;
 
 
 
