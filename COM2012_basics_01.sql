@@ -639,6 +639,112 @@ FROM
 GROUP BY
     order_id;
 
+-- 12. HAVING
+-- SYNTAX: HAVING clause is often used with the GROUP BY clause to filter groups based on a specified list of conditions
+/*
+SELECT
+    select_list
+FROM
+    table_name
+GROUP BY
+    group_list
+HAVING
+    conditions;
+*/
 
+-- 12.1 HAVING with the COUNT function
+SELECT
+    customer_id,
+    YEAR (order_date) AS order_year,
+    COUNT (order_id) order_count
+FROM
+    sales.orders
+GROUP BY
+    customer_id,
+    YEAR (order_date)
+HAVING
+    COUNT (order_id) >= 2
+ORDER BY
+    customer_id;
 
+-- 12.2 HAVING clause with the SUM() function
+-- The following statement finds the sales orders whose net values are greater than 20,000
+SELECT
+    order_id,
+    SUM (
+        quantity * list_price * (1 - discount)
+    ) net_value
+FROM
+    sales.order_items
+GROUP BY
+    order_id
+HAVING
+    SUM (
+        quantity * list_price * (1 - discount)
+    ) > 20000
+ORDER BY
+    net_value;
 
+--
+SELECT
+    *
+FROM
+    sales.order_items;
+
+SELECT
+    *
+FROM
+    sales.orders;
+
+-- HAVING clause with MAX and MIN functions
+-- The following statement first finds the maximum and minimum list prices in each product category. Then, it filters out the category which has a maximum list price greater than 4,000 or a minimum list price less than 500
+SELECT
+    category_id,
+    MAX (list_price) max_list_price,
+    MIN (list_price) min_list_price
+FROM
+    production.products
+GROUP BY
+    category_id
+HAVING
+    MAX (list_price) > 4000 OR MIN (list_price) < 500;
+
+-- HAVING clause with AVG() function
+-- The following statement finds product categories whose average list prices are between 500 and 1,000
+SELECT
+    category_id,
+    AVG (list_price) avg_list_price
+FROM
+    production.products
+GROUP BY
+    category_id
+HAVING
+    AVG (list_price) BETWEEN 500 AND 1000;
+
+-- 13. INNER JOIN
+--
+SELECT
+    product_name,
+    category_name,
+    list_price
+FROM
+    production.products AS p
+INNER JOIN production.categories AS c 
+    ON c.category_id = p.category_id
+ORDER BY
+    product_name DESC;
+
+--
+SELECT
+    product_name,
+    category_name,
+    brand_name,
+    list_price
+FROM
+    production.products p
+INNER JOIN production.categories c ON c.category_id = p.category_id
+INNER JOIN production.brands b ON b.brand_id = p.brand_id
+ORDER BY
+    product_name DESC;
+
+-- 14. LEFT JOIN, RIGHT JOIN
