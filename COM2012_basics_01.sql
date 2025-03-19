@@ -730,7 +730,8 @@ SELECT
 FROM
     production.products AS p
 INNER JOIN production.categories AS c 
-    ON c.category_id = p.category_id
+    ON c.category_id = p.category_id -- AND c.category_id = 1
+-- WHERE c.category_id = 1
 ORDER BY
     product_name DESC;
 
@@ -748,3 +749,72 @@ ORDER BY
     product_name DESC;
 
 -- 14. LEFT JOIN, RIGHT JOIN
+-- returns all rows from the left table and the matching rows from the right table. If no matching rows are found in the right table, NULL are used
+--
+SELECT
+    product_name,
+    order_id,
+	--
+	p.product_id AS 'In Products',
+	o.product_id AS 'In Orders'
+FROM
+    production.products p
+LEFT JOIN sales.order_items o ON o.product_id = p.product_id
+ORDER BY
+    order_id;
+
+-- with WHERE: returns the products that do not appear in any sales order
+SELECT
+    product_name,
+    order_id
+FROM
+    production.products p
+LEFT JOIN sales.order_items o ON o.product_id = p.product_id
+WHERE order_id IS NULL
+
+--  join three tables: production.products, sales.orders, and sales.order_items using the LEFT JOIN clauses
+SELECT
+    p.product_name,
+    o.order_id,
+    i.item_id,
+    o.order_date,
+	--
+	i.product_id,
+	p.product_id
+FROM
+    production.products p
+	LEFT JOIN sales.order_items i
+		ON i.product_id = p.product_id
+	LEFT JOIN sales.orders o
+		ON o.order_id = i.order_id
+ORDER BY
+    order_id;
+
+-- conditions in ON vs. WHERE clause: not same; Note that for the INNER JOIN , the condition in the ON is functionally equivalent in the WHERE.
+-- WHERE
+SELECT
+    product_name,
+    order_id
+FROM
+    production.products p
+LEFT JOIN sales.order_items o 
+   ON o.product_id = p.product_id
+WHERE order_id = 100
+ORDER BY
+    order_id;
+
+-- ON
+SELECT
+    p.product_id,
+    product_name,
+    order_id
+FROM
+    production.products p
+    LEFT JOIN sales.order_items o 
+         ON o.product_id = p.product_id AND 
+            o.order_id = 100
+ORDER BY
+    order_id DESC;
+
+-- 15. FULL OUTER JOIN
+
